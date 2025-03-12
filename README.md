@@ -19,99 +19,121 @@ Follow these steps to set up the project.
 ```sh
 git clone https://github.com/yourusername/poc_orleans_onion.git
 cd poc_orleans_onion
-2️⃣ Install Dependencies
-sh
-Copy code
+```
+
+### **2️⃣ Install Dependencies**
+```sh
 dotnet restore
-3️⃣ Setup the Database
+```
+
+### **3️⃣ Setup the Database**
 Run EF Core migrations:
+```sh
+dotnet ef migrations add InitialCreate --project PocOrleans.Infrastructure
+dotnet ef database update --project PocOrleans.Infrastructure
+```
 
-sh
-Copy code
-dotnet ef migrations add InitialCreate --project OrleansOnionSOLID.Infrastructure
-dotnet ef database update --project OrleansOnionSOLID.Infrastructure
-4️⃣ Run the Application
+### **4️⃣ Run the Application**
 👉 Run Locally
-sh
-Copy code
-dotnet run --project OrleansOnionSOLID.API
-👉 Run with Docker
-sh
-Copy code
-docker-compose up --build
-The API will be available at http://localhost:5000.
+```sh
+dotnet run --project PocOrleans.API
+```
 
-🔥 Testing the API
+👉 Run with Docker
+```sh
+docker-compose up --build
+```
+The API will be available at [http://localhost:5000](http://localhost:5000).
+
+---
+
+## 🔥 Testing the API
 Use cURL or Postman to test the API.
 
-Create a User
-sh
-Copy code
+### Create a User
+```sh
 curl -X POST "http://localhost:5000/api/user?id=550e8400-e29b-41d4-a716-446655440000" \
   -H "Content-Type: application/json" \
   -d '{"name": "John Doe", "email": "john@example.com"}'
-Get a User
-sh
-Copy code
+```
+
+### Get a User
+```sh
 curl -X GET "http://localhost:5000/api/user/550e8400-e29b-41d4-a716-446655440000"
-🧪 Running Unit Tests
+```
+
+---
+
+## 🧪 Running Unit Tests
 The project includes unit tests for services and repositories using xUnit & NSubstitute.
 
-Run Tests
-sh
-Copy code
+### Run Tests
+```sh
 dotnet test
-Expected Output
-csharp
-Copy code
-Passed! - 2 tests from OrleansOnionSOLID.Tests.Repositories.UserRepositoryTests
-Passed! - 2 tests from OrleansOnionSOLID.Tests.Services.UserProfileServiceTests
-🏗 Project Structure
-bash
-Copy code
+```
+
+### Expected Output
+```sh
+Passed! - 2 tests from PocOrleans.Tests.Repositories.UserRepositoryTests
+Passed! - 2 tests from PocOrleans.Tests.Services.UserProfileServiceTests
+```
+
+---
+
+## 🏗 Project Structure
+```bash
 poc_orleans_onion/
-│-- OrleansOnionSOLID.API/            # API Layer (Presentation)
-│-- OrleansOnionSOLID.Application/    # Application Layer (Business Logic)
-│-- OrleansOnionSOLID.Domain/         # Domain Layer (Entities & Interfaces)
-│-- OrleansOnionSOLID.Infrastructure/ # Infrastructure Layer (Persistence & Orleans)
-│-- OrleansOnionSOLID.Tests/          # Unit Tests (xUnit & NSubstitute)
+│-- PocOrleans.API/            # API Layer (Presentation)
+│-- PocOrleans.Application/    # Application Layer (Business Logic)
+│-- PocOrleans.Domain/         # Domain Layer (Entities & Interfaces)
+│-- PocOrleans.Infrastructure/ # Infrastructure Layer (Persistence & Orleans)
+│-- PocOrleans.Tests/          # Unit Tests (xUnit & NSubstitute)
 │-- docker-compose.yml                # Docker Configuration
 │-- README.md                         # Project Documentation
-🐳 Docker Setup
-Build & Run Containers
-sh
-Copy code
+```
+
+---
+
+## 🐳 Docker Setup
+
+### Build & Run Containers
+```sh
 docker-compose up --build
-Stop Containers
-sh
-Copy code
+```
+
+### Stop Containers
+```sh
 docker-compose down
-Check Running Containers
-sh
-Copy code
+```
+
+### Check Running Containers
+```sh
 docker ps
-🔹 Docker Configuration
+```
+
+---
+
+## 🔹 Docker Configuration
 The project includes a Dockerfile and docker-compose.yml file.
 
-Dockerfile for API
-dockerfile
-Copy code
+### Dockerfile for API
+```dockerfile
 # Use official .NET 8 SDK as build environment
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 # Copy solution and restore dependencies
 COPY *.sln .
-COPY OrleansOnionSOLID.Domain/*.csproj OrleansOnionSOLID.Domain/
-COPY OrleansOnionSOLID.Application/*.csproj OrleansOnionSOLID.Application/
-COPY OrleansOnionSOLID.Infrastructure/*.csproj OrleansOnionSOLID.Infrastructure/
-COPY OrleansOnionSOLID.API/*.csproj OrleansOnionSOLID.API/
+COPY PocOrleans.Domain/*.csproj PocOrleans.Domain/
+COPY PocOrleans.Application/*.csproj PocOrleans.Application/
+COPY PocOrleans.Infrastructure/*.csproj PocOrleans.Infrastructure/
+COPY PocOrleans.API/*.csproj PocOrleans.API/
 
-RUN dotnet restore OrleansOnionSOLID.API/OrleansOnionSOLID.API.csproj
+RUN dotnet restore PocOrleans.API/PocOrleans.API.csproj
 
 # Copy everything and build
 COPY . .
-WORKDIR /app/OrleansOnionSOLID.API
+WORKDIR /app/PocOrleans.API
 RUN dotnet publish -c Release -o /out
 
 # Use official .NET runtime as execution environment
@@ -120,24 +142,27 @@ WORKDIR /app
 COPY --from=build /out .
 EXPOSE 5000
 EXPOSE 5001
-ENTRYPOINT ["dotnet", "OrleansOnionSOLID.API.dll"]
-🧪 Unit Tests
+ENTRYPOINT ["dotnet", "PocOrleans.API.dll"]
+```
+
+---
+
+## 🧪 Unit Tests
 The project includes unit tests using xUnit & NSubstitute.
 
-Example: UserProfileServiceTests
-csharp
-Copy code
+### Example: UserProfileServiceTests
+```csharp
 using System;
 using System.Threading.Tasks;
 using NSubstitute;
 using Orleans;
-using OrleansOnionSOLID.Application.Interfaces;
-using OrleansOnionSOLID.Application.Services;
-using OrleansOnionSOLID.Domain.Entities;
-using OrleansOnionSOLID.Domain.Interfaces;
+using PocOrleans.Application.Interfaces;
+using PocOrleans.Application.Services;
+using PocOrleans.Domain.Entities;
+using PocOrleans.Domain.Interfaces;
 using Xunit;
 
-namespace OrleansOnionSOLID.Tests.Services
+namespace PocOrleans.Tests.Services
 {
     public class UserProfileServiceTests
     {
@@ -171,3 +196,4 @@ namespace OrleansOnionSOLID.Tests.Services
         }
     }
 }
+```
